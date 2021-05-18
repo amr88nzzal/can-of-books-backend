@@ -93,12 +93,12 @@ mohammad.save();
 
 User.find({ email: 'amr.nzzal@gmail.com' }, (err, details) => {
     if (err) return console.error(err);
-    console.log({ details })
+    // console.log({ details })
 });
 
 User.find({ email: 'm98altamimi@gmail.com' }, (err, details) => {
     if (err) return console.error(err);
-    console.log({ details })
+    // console.log({ details })
 });
 
 
@@ -108,7 +108,7 @@ function getByEmail(req, res) {
     const { email } = req.query;
     console.log(email);
     User.find({ email: email }, function (err, ownerData) {
-        console.log('1=',ownerData,'2=',ownerData[0])
+        // console.log('1=',ownerData,'2=',ownerData[1])
         if (err) res.send('No ');
         // console.log(ownerData[0].books)
         res.send(ownerData[0].books);
