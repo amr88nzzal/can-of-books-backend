@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { response } = require('express');
 const mongoose = require('mongoose');
 
 
@@ -108,10 +109,66 @@ function getByEmail(req, res) {
     const { email } = req.query;
     console.log(email);
     User.find({ email: email }, function (err, ownerData) {
-        // console.log('1=',ownerData,'2=',ownerData[1])
+        console.log(ownerData)
         if (err) res.send('No ');
         // console.log(ownerData[0].books)
         res.send(ownerData[0].books);
     });
 }
 module.exports = getByEmail;
+
+
+
+// add new books 
+// TODO: push in the array of your current books your new books.
+addNewBooks = async (req, res) => {
+    const email = req.query;
+    const { name, description, status } = req.body;
+
+    try {
+        await User.find({ email }, (err, ownerData) => {
+            if (ownerData.length) {
+                const currentUser = ownerData[0];
+                const currentBooks = currentUser.books;
+                const newBooks = { name: name, description: description, status: status }
+                currentBooks.push(addNewBooks);
+                currentUser.save();
+                response.send(currentUser.books)
+            } else {
+                return console.error(error);
+            }
+        })
+    }
+    catch (error) {
+        console.log(error);
+        res.send('didn\'t post')
+    }
+}
+
+
+
+// delete an existing book 
+
+deleteBook = async (req, res) => {
+
+    const index = Number(req.params.index);
+    const email = req.query.email;
+
+    await User.find({ email }, (err, ownerData) => {
+        try {
+            const user = ownerData[0];
+            const currentBooksArray = ownerData.books.filter((_, i) => i !== index);
+            user.books = currentBooksArray;
+            user.save();
+            response.send('deleted!');
+        }
+        catch (error) {
+            response.send("no user found");
+            console.log(error)
+        }
+    }
+    );
+
+
+
+};
