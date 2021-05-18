@@ -6,6 +6,8 @@ const app = express();
 const port = process.env.PORT || 8081;
 app.use(cors());
 const getByEmail = require('./models/User');
+const addNewBooks = require('./models/User');
+const deleteBook = require('./models/User');
 
 
 

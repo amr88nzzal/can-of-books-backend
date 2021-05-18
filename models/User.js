@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 
 
-mongoose.connect('mongodb://localhost:27017/books', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/Books', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -88,8 +88,8 @@ const mohammad = new User(
     }
 );
 
-amr.save();
-mohammad.save();
+// amr.save();
+// mohammad.save();
 
 
 User.find({ email: 'amr.nzzal@gmail.com' }, (err, details) => {
