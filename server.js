@@ -6,10 +6,13 @@ const app = express();
 const port = process.env.PORT || 8081;
 app.use(cors());
 const getByEmail = require('./models/User');
-///////////////////////
+
+
+
+
 app.get('/', homePage);
 function homePage(req, res) {
-  res.send('welcome to home page')
+  res.send('welcome to the home page.')
 }
 
 app.get('/book', getByEmail);
