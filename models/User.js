@@ -9,7 +9,7 @@ const cors = require("cors");
 
 
 // mongoose initialization
-mongoose.connect('mongodb://localhost:27017/books', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/Books', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -148,8 +148,6 @@ getByEmail = async (req, res) => {
                     status: status
                 }
                 )
-            
-
                 ownerData[0].save();
                 res.send(ownerData[0].books);
             } else {
@@ -161,10 +159,7 @@ getByEmail = async (req, res) => {
         console.log(error);
         res.send('didn\'t post')
     }
-}
-
-
-
+};
 // delete an existing book 
 
  deleteBook = async (req, res) => {
@@ -187,10 +182,29 @@ getByEmail = async (req, res) => {
         }
     }
     );
+};
+updateBook = async (req, res) => {
+    const index = Number(req.params.index);
+    const { email, name, description, status } = req.body;
+    console.log('req.body=', req.body);
+
+    await User.find({ email:email }, (err, ownerData) => {
+        try {
+            ownerData[0].books[index]={name: name,description:description,status:status}
+            ownerData[0].save();
+
+            res.send(ownerData[0].books);
+        }
+        catch (error) {
+            response.send(error);
+            console.log(error)
+        }
+    }
+    );
 
 
 
 };
-module.exports = { getByEmail, deleteBook, addNewBooks }
+module.exports = { getByEmail, deleteBook, addNewBooks,updateBook }
 
 
