@@ -1,16 +1,24 @@
+// require packages
+
 require('dotenv').config();
 const { response } = require('express');
 const mongoose = require('mongoose');
+const cors = require("cors");
 
 
 
-mongoose.connect('mongodb://localhost:27017/Books', { useNewUrlParser: true, useUnifiedTopology: true });
+
+// mongoose initialization
+mongoose.connect('mongodb://localhost:27017/books', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     console.log('Mongoose is connected')
 });
+
+
+
 
 
 
@@ -32,6 +40,9 @@ const UserSchema = new mongoose.Schema({
 
 
 const User = mongoose.model('user', UserSchema);
+
+
+
 
 // populating our data
 
@@ -105,7 +116,7 @@ User.find({ email: 'm98altamimi@gmail.com' }, (err, details) => {
 
 
 
-function getByEmail(req, res) {
+getByEmail = async (req, res) => {
     const { email } = req.query;
     console.log(email);
     User.find({ email: email }, function (err, ownerData) {
@@ -115,25 +126,32 @@ function getByEmail(req, res) {
         res.send(ownerData[0].books);
     });
 }
-module.exports = getByEmail;
+
+
+
+
 
 
 
 // add new books 
 // TODO: push in the array of your current books your new books.
-addNewBooks = async (req, res) => {
-    const email = req.query;
-    const { name, description, status } = req.body;
+ addNewBooks = async (req, res) => {
+    const { email, name, description, status } = req.body;
+    console.log('req.body=', req.body);
 
     try {
-        await User.find({ email }, (err, ownerData) => {
+        await User.find({ email: email }, (err, ownerData) => {    // 
             if (ownerData.length) {
-                const currentUser = ownerData[0];
-                const currentBooks = currentUser.books;
-                const newBooks = { name: name, description: description, status: status }
-                currentBooks.push(addNewBooks);
-                currentUser.save();
-                response.send(currentUser.books)
+                ownerData[0].books.push({
+                    name: name,
+                    description: description,
+                    status: status
+                }
+                )
+            
+
+                ownerData[0].save();
+                res.send(ownerData[0].books);
             } else {
                 return console.error(error);
             }
@@ -149,18 +167,19 @@ addNewBooks = async (req, res) => {
 
 // delete an existing book 
 
-deleteBook = async (req, res) => {
-
+ deleteBook = async (req, res) => {
     const index = Number(req.params.index);
     const email = req.query.email;
 
-    await User.find({ email }, (err, ownerData) => {
+    await User.find({ email:email }, (err, ownerData) => {
         try {
-            const user = ownerData[0];
-            const currentBooksArray = ownerData.books.filter((_, i) => i !== index);
-            user.books = currentBooksArray;
-            user.save();
-            response.send('deleted!');
+            const newArray = ownerData[0].books.filter((book,idx)=>{
+                return idx !== index 
+            });
+            ownerData[0].books=newArray;
+            ownerData[0].save();
+
+            res.send(ownerData[0].books);
         }
         catch (error) {
             response.send("no user found");
@@ -172,3 +191,6 @@ deleteBook = async (req, res) => {
 
 
 };
+module.exports = { getByEmail, deleteBook, addNewBooks }
+
+
