@@ -19,6 +19,7 @@ function homePage(req, res) {
 app.get('/book', userPage.getByEmail);
 app.post('/book',userPage.addNewBooks);
 app.delete('/book/:index',userPage.deleteBook);
+app.put('/book/:index',userPage.updateBook);
 
 app.listen(port, () => { console.log("server port :" + port); });
 
