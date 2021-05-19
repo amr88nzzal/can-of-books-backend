@@ -186,11 +186,11 @@ getByEmail = async (req, res) => {
 updateBook = async (req, res) => {
     const index = Number(req.params.index);
     const { email, name, description, status } = req.body;
-    console.log('req.body=', req.body);
+    // console.log('req.body=', req.body,index,req.params.index);
 
     await User.find({ email:email }, (err, ownerData) => {
         try {
-            ownerData[0].books[index]={name: name,description:description,status:status}
+            ownerData[0].books.splice(index, 1,{name: name,description:description,status:status});
             ownerData[0].save();
 
             res.send(ownerData[0].books);
