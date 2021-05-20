@@ -9,14 +9,13 @@ const cors = require("cors");
 
 
 // mongoose initialization
-mongoose.connect('mongodb://localhost:27017/Books', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/books', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
     console.log('Mongoose is connected')
 });
-
 
 
 
@@ -115,7 +114,6 @@ User.find({ email: 'm98altamimi@gmail.com' }, (err, details) => {
 
 
 
-
 getByEmail = async (req, res) => {
     const { email } = req.query;
     console.log(email);
@@ -132,10 +130,9 @@ getByEmail = async (req, res) => {
 
 
 
-
 // add new books 
 // TODO: push in the array of your current books your new books.
- addNewBooks = async (req, res) => {
+addNewBooks = async (req, res) => {
     const { email, name, description, status } = req.body;
     console.log('req.body=', req.body);
 
@@ -162,16 +159,16 @@ getByEmail = async (req, res) => {
 };
 // delete an existing book 
 
- deleteBook = async (req, res) => {
+deleteBook = async (req, res) => {
     const index = Number(req.params.index);
     const email = req.query.email;
 
-    await User.find({ email:email }, (err, ownerData) => {
+    await User.find({ email: email }, (err, ownerData) => {
         try {
-            const newArray = ownerData[0].books.filter((book,idx)=>{
-                return idx !== index 
+            const newArray = ownerData[0].books.filter((book, idx) => {
+                return idx !== index
             });
-            ownerData[0].books=newArray;
+            ownerData[0].books = newArray;
             ownerData[0].save();
 
             res.send(ownerData[0].books);
@@ -188,9 +185,9 @@ updateBook = async (req, res) => {
     const { email, name, description, status } = req.body;
     // console.log('req.body=', req.body,index,req.params.index);
 
-    await User.find({ email:email }, (err, ownerData) => {
+    await User.find({ email: email }, (err, ownerData) => {
         try {
-            ownerData[0].books.splice(index, 1,{name: name,description:description,status:status});
+            ownerData[0].books.splice(index, 1, { name: name, description: description, status: status });
             ownerData[0].save();
 
             res.send(ownerData[0].books);
@@ -205,6 +202,6 @@ updateBook = async (req, res) => {
 
 
 };
-module.exports = { getByEmail, deleteBook, addNewBooks,updateBook }
+module.exports = { getByEmail, deleteBook, addNewBooks, updateBook }
 
 
